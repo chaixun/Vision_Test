@@ -1,0 +1,22 @@
+# C++:
+*.slo
+*.lo
+*.o
+*.obj
+
+# local:
+log*.botlog
+log*.txt
+
+*.config
+*.creator
+*.user
+*.files
+
+<<<<<<< HEAD
+=======
+CMaKeFiles
+
+CMakeCache
+
+.*~
