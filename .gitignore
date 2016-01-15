@@ -12,6 +12,7 @@ log*.txt
 *.creator
 *.user
 *.files
+*.includes
 
 <<<<<<< HEAD
 =======
