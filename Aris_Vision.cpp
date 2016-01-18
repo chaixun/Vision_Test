@@ -366,14 +366,15 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
                                   {0, 0, 0, 1}};
 */
 
-    float kinectAdjust[4][4] = {{1, 0, 0, 0},
+    // Experiment Desk
+    float kinectAdjust[4][4] = {{-1, 0, 0, 0},
                                 {0, 1, 0, 0},
                                 {0, 0, 1, 0},
                                 {0, 0, 0, 1}};
 
-    float kinectToRobot[4][4] = {{1, 0, 0, 0},
-                                 {0, 1, 0, 0},
-                                 {0, 0, 1, 0},
+    float kinectToRobot[4][4] = {{0.9999, 0.0130, -0.0070, 0},
+                                 {-0.0148, 0.8799, -0.4749, 0.8460},
+                                 {0, 0.4750, 0.8800, 0},
                                  {0, 0, 0, 1}};
 
     float robotToWorld[4][4] = {{1, 0, 0, 0},
