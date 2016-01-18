@@ -3,6 +3,8 @@
 #include <string>
 #include <XnCppWrapper.h>
 #include "math.h"
+#include <sstream>
+#include <fstream>
 
 using namespace xn;
 
@@ -11,6 +13,8 @@ namespace Aris
 
 namespace Sensor
 {
+
+static int frameNum = 0;
 
 struct Point3D
 {
@@ -304,14 +308,6 @@ void KINECT::UpdateData(VISION_DATA &data)
     }
 }
 
-void KINECT::KinectSave(VISION_DATA &cdata, int frame_Num)
-{
-//     stringstream out;
-//     out<<frame_Num-1;
-//     string dataname = "cloud" + out.str() + ".pcd";
-
-}
-
 void KINECT_BASE::Initiate()
 {
     mKinectStruct->mStatus = mKinectStruct->mContext.Init();
@@ -391,6 +387,13 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
 
     MatrixMultiple(robotToWorld, tempMatrix, kinectToWorld);
 
+
+    ofstream ofs;
+    stringstream out;
+    out<<frameNum;
+    string dataname ="../PointCloud/cloud" + out.str() + ".txt";
+    ofs.open(dataname,ios::trunc);
+
     for (int i = 0; i < 480; i++)
     {
         for(int j = 0; j < 640; j++)
@@ -409,8 +412,13 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
             data.pointCloud[i][j][0] = tempPoint.X;
             data.pointCloud[i][j][1] = tempPoint.Y;
             data.pointCloud[i][j][2] = tempPoint.Z;
+
+            ofs<<data.pointCloud[i][j][0]<<" "<<data.pointCloud[i][j][1]<<" "<<data.pointCloud[i][j][2]<<" "<<endl;
         }
     }
+
+    frameNum++;
+    ofs.close();
 
     GenerateGridMap(data);
 }

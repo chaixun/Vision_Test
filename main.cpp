@@ -40,13 +40,14 @@ int main()
 #ifdef PLATFORM_IS_LINUX
     kinect.Start();
 
-    for (int i = 0; i < 5000; ++i)
+    for (int i = 0; i < 5; ++i)
     {
         auto data = kinect.GetSensorData();
         std::cout<<"data:"<<data.Get().depthMap[240*320]<<std::endl;
         std::cout<<"plane_Degree:"<<data.Get().pGridMap[8][12].planeDegree<<std::endl;
         std::cout<<"point_Num:"<<data.Get().pGridMap[8][12].pointNum<<std::endl;
-        Aris::Core::Sleep(10);
+
+        Aris::Core::Sleep(1000);
     }
 
     kinect.Stop();
