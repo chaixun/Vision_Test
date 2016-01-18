@@ -302,8 +302,8 @@ void KINECT::UpdateData(VISION_DATA &data)
                 }
             }
             CalPlane(pPointSet, data.pGridMap[m][n]);
-            cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
-            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
+//            cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
+//            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
         }
     }
 }
@@ -417,6 +417,7 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
         }
     }
 
+    cout<<"FrameNum: "<<frameNum<<endl;
     frameNum++;
     ofs.close();
 
