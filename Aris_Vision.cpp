@@ -275,9 +275,9 @@ void KINECT::UpdateData(VISION_DATA &data)
 
     vector<Point3D> pPointSet;
 
-    for(int m = 0; m < 30; m++)
+    for(int m = 7; m < 11; m++)
     {
-        for(int n = 0; n < 30; n++)
+        for(int n = 11; n < 19; n++)
         {
             pPointSet.clear();
 
@@ -298,8 +298,18 @@ void KINECT::UpdateData(VISION_DATA &data)
                 }
             }
             CalPlane(pPointSet, data.pGridMap[m][n]);
+            cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
+            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
         }
     }
+}
+
+void KINECT::KinectSave(VISION_DATA &cdata, int frame_Num)
+{
+//     stringstream out;
+//     out<<frame_Num-1;
+//     string dataname = "cloud" + out.str() + ".pcd";
+
 }
 
 void KINECT_BASE::Initiate()
@@ -347,17 +357,24 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
 
     GeneratePointCloud(mKinectStruct->mDepthGenerator, pDepthMap, data);
 
+    /*
     float kinectAdjust[4][4] = {{-1, 0, 0, 0},
                                 {0, 1, 0, 0},
                                 {0, 0, 1, 0},
                                 {0, 0, 0, 1}};
 
-    /*
+
     float kinectToRobot[4][4] = {{0.9995, 0.0134, -0.0273, 0.0224},
                                   {-0.0304, 0.5120, -0.8584, 0.2026 + 0.038},
                                   {0.0025, 0.8589, 0.5122, 0.5733},
                                   {0, 0, 0, 1}};
 */
+
+    float kinectAdjust[4][4] = {{1, 0, 0, 0},
+                                {0, 1, 0, 0},
+                                {0, 0, 1, 0},
+                                {0, 0, 0, 1}};
+
     float kinectToRobot[4][4] = {{1, 0, 0, 0},
                                  {0, 1, 0, 0},
                                  {0, 0, 1, 0},

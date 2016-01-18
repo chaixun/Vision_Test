@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -55,6 +56,7 @@ class KINECT: public KINECT_BASE
 public:
     KINECT();
     ~KINECT();
+    void KinectSave(VISION_DATA &, int);
 private:
     virtual void UpdateData(VISION_DATA &data);
 };
