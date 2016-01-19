@@ -26,6 +26,7 @@ log*.txt
 CMaKeFiles
 CMakeFiles
 bin
+PointCloud
 CMakeCache.txt*
 Makefile*
 cmake_install.cmake*
