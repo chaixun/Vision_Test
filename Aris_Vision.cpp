@@ -63,114 +63,111 @@ void InverseMatrix(float M[3][3], float InvM[3][3])
 
 void CalPlane(vector<Point3D>& cPointSet, GridMap &cgridmap)
 {
-    float pX[3] = {0};
-    float A[3][3] = {0};
-    float A_I[3][3] = {0};
-    float b[3] = {0};
-
-    for(int i = 0; i < cPointSet.size(); ++i)
+    if(cPointSet.size() != 0)
     {
-        A[0][0] = A[0][0] + cPointSet[i].X*cPointSet[i].X;
-        A[0][1] = A[0][1] + cPointSet[i].X*cPointSet[i].Y;
-        A[0][2] = A[0][2] + cPointSet[i].X;
+        float pX[3] = {0};
+        float A[3][3] = {0};
+        float A_I[3][3] = {0};
+        float b[3] = {0};
 
-        A[1][0] = A[0][1];
-        A[1][1] = A[1][1] + cPointSet[i].Y*cPointSet[i].Y;
-        A[1][2] = A[1][2] + cPointSet[i].Y;
-
-        A[2][0] = A[0][2];
-        A[2][1] = A[1][2];
-        A[2][2] = cPointSet.size();
-
-        b[0] = b[0] + cPointSet[i].X*cPointSet[i].Z;
-        b[1] = b[1] + cPointSet[i].Y*cPointSet[i].Z;
-        b[2] = b[2] + cPointSet[i].Z;
-    }
-
-    if(CalDet(A)==0)
-    {
-        float A1[2][2] = {0};
-        float A1_I[2][2] = {0};
-        float b1[2] = {0};
         for(int i = 0; i < cPointSet.size(); ++i)
         {
-            A1[0][0] = A1[0][0] + cPointSet[i].Y*cPointSet[i].Y;
-            A1[0][1] = A1[0][1] + cPointSet[i].Y;
+            A[0][0] = A[0][0] + cPointSet[i].X*cPointSet[i].X;
+            A[0][1] = A[0][1] + cPointSet[i].X*cPointSet[i].Y;
+            A[0][2] = A[0][2] + cPointSet[i].X;
 
-            A1[1][0] = A1[0][1];
-            A1[1][1] = i+1;
+            A[1][0] = A[0][1];
+            A[1][1] = A[1][1] + cPointSet[i].Y*cPointSet[i].Y;
+            A[1][2] = A[1][2] + cPointSet[i].Y;
 
-            b1[0] = b1[0] + cPointSet[i].X*cPointSet[i].Y;
-            b1[1] = b1[1] + cPointSet[i].X;
+            A[2][0] = A[0][2];
+            A[2][1] = A[1][2];
+            A[2][2] = cPointSet.size();
+
+            b[0] = b[0] + cPointSet[i].X*cPointSet[i].Z;
+            b[1] = b[1] + cPointSet[i].Y*cPointSet[i].Z;
+            b[2] = b[2] + cPointSet[i].Z;
         }
 
-        float detA1 = A1[0][0]*A1[1][1] - A1[0][1]*A1[1][0];
+        //cout<<"det A: "<<CalDet(A)<<endl;
 
-        if(detA1 == 0)
+        if(fabs(CalDet(A) - 0) < 0.01)
         {
-            float A2 = 0;
-            float b2 = 0;
-            for(int i = 0; i < cPointSet.size(); i++)
+            float A1[2][2] = {0};
+            float A1_I[2][2] = {0};
+            float b1[2] = {0};
+            for(int i = 0; i < cPointSet.size(); ++i)
             {
-                A2 = A2 + cPointSet[i].Y;
-                b2 = i + 1;
-            }
-            pX[2] = A2/b2;
+                A1[0][0] = A1[0][0] + cPointSet[i].Y*cPointSet[i].Y;
+                A1[0][1] = A1[0][1] + cPointSet[i].Y;
 
-            cgridmap.planePara[0] = 0;
-            cgridmap.planePara[1] = 1;
-            cgridmap.planePara[2] = 0;
-            cgridmap.planePara[3] = -pX[2];
+                A1[1][0] = A1[0][1];
+                A1[1][1] = i+1;
+
+                b1[0] = b1[0] + cPointSet[i].X*cPointSet[i].Y;
+                b1[1] = b1[1] + cPointSet[i].X;
+            }
+
+            float detA1 = A1[0][0]*A1[1][1] - A1[0][1]*A1[1][0];
+
+            if((detA1 - 0) <= 0.01)
+            {
+                float A2 = 0;
+                float b2 = 0;
+                for(int i = 0; i < cPointSet.size(); i++)
+                {
+                    A2 = A2 + cPointSet[i].Y;
+                    b2 = i + 1;
+                }
+                pX[2] = A2/b2;
+
+                cgridmap.planePara[0] = 0;
+                cgridmap.planePara[1] = 1;
+                cgridmap.planePara[2] = 0;
+                cgridmap.planePara[3] = -pX[2];
+            }
+            else
+            {
+                A1_I[0][0] = A1[1][1]/detA1;
+                A1_I[0][1] = -A1[1][0]/detA1;
+                A1_I[1][0] = -A1[0][1]/detA1;
+                A1_I[1][1] = A1[0][0]/detA1;
+
+                pX[1] = A1_I[0][0]*b1[0] + A1_I[0][1]*b1[1];
+                pX[2] = A1_I[1][0]*b1[0] + A1_I[1][1]*b1[1];
+
+                cgridmap.planePara[0] = -1;
+                cgridmap.planePara[1] = pX[1];
+                cgridmap.planePara[2] = 0;
+                cgridmap.planePara[3] = pX[2];
+            }
         }
         else
         {
-            A1_I[0][0] = A1[1][1]/detA1;
-            A1_I[0][1] = -A1[1][0]/detA1;
-            A1_I[1][0] = -A1[0][1]/detA1;
-            A1_I[1][1] = A1[0][0]/detA1;
+            InverseMatrix(A, A_I);
+            pX[0] = A_I[0][0]*b[0] + A_I[0][1]*b[1] + A_I[0][2]*b[2];
+            pX[1] = A_I[1][0]*b[0] + A_I[1][1]*b[1] + A_I[1][2]*b[2];
+            pX[2] = A_I[2][0]*b[0] + A_I[2][1]*b[1] + A_I[2][2]*b[2];
 
-            pX[1] = A1_I[0][0]*b1[0] + A1_I[0][1]*b1[1];
-            pX[2] = A1_I[1][0]*b1[0] + A1_I[1][1]*b1[1];
-
-            cgridmap.planePara[0] = -1;
-            cgridmap.planePara[1] = pX[1];
-            cgridmap.planePara[2] = 0;
-            cgridmap.planePara[3] = pX[2];
-        }
-    }
-    else
-    {
-        InverseMatrix(A, A_I);
-        pX[0] = A_I[0][0]*b[0] + A_I[0][1]*b[1] + A_I[0][2]*b[2];
-        pX[1] = A_I[1][0]*b[0] + A_I[1][1]*b[1] + A_I[1][2]*b[2];
-        pX[2] = A_I[2][0]*b[0] + A_I[2][1]*b[1] + A_I[2][2]*b[2];
-
-        if(pX[0] > 0)
-        {
             cgridmap.planePara[0] = -pX[0];
             cgridmap.planePara[1] = -pX[1];
             cgridmap.planePara[2] = 1;
             cgridmap.planePara[3] = -pX[2];
+
+
         }
-        else
+
+        float distance1 = 0;
+        float distance2 = sqrt(cgridmap.planePara[0]*cgridmap.planePara[0] + cgridmap.planePara[1]*cgridmap.planePara[1] + cgridmap.planePara[2]*cgridmap.planePara[2]);
+
+        for(int i = 0; i < cPointSet.size(); i++)
         {
-            cgridmap.planePara[0] = pX[0];
-            cgridmap.planePara[1] = pX[1];
-            cgridmap.planePara[2] = -1;
-            cgridmap.planePara[3] = pX[2];
+            distance1 = distance1 + fabs(cgridmap.planePara[0]*cPointSet[i].X + cgridmap.planePara[1]*cPointSet[i].Y + cgridmap.planePara[2]*cPointSet[i].Z + cgridmap.planePara[3]);
         }
+
+        cgridmap.planeDegree = distance1/distance2/cPointSet.size();
+        cgridmap.normalVector = acos(cgridmap.planePara[1]/distance2)/3.1415926*180;
     }
-
-    float distance1 = 0;
-    float distance2 = sqrt(cgridmap.planePara[0]*cgridmap.planePara[0] + cgridmap.planePara[1]*cgridmap.planePara[1] + cgridmap.planePara[2]*cgridmap.planePara[2]);
-
-    for(int i = 0; i < cPointSet.size(); i++)
-    {
-        distance1 = distance1 + fabs(cgridmap.planePara[0]*cPointSet[i].X + cgridmap.planePara[1]*cPointSet[i].Y + cgridmap.planePara[2]*cPointSet[i].Z + cgridmap.planePara[3]);
-    }
-
-    cgridmap.planeDegree = distance1/distance2/cPointSet.size();
-    cgridmap.normalVector = acos(cgridmap.planePara[1]/distance2)/3.1415926*180;
 }
 
 void GeneratePointCloud(DepthGenerator& rDepthGen, const XnDepthPixel* pDepth, VISION_DATA &pData)
@@ -279,9 +276,15 @@ void KINECT::UpdateData(VISION_DATA &data)
 
     vector<Point3D> pPointSet;
 
-    for(int m = 7; m < 11; m++)
+    ofstream ofs4;
+    stringstream out4;
+    out4<<frameNum;
+    string dataname4 ="../PointCloud/PlaneData_" + out4.str() + ".txt";
+    ofs4.open(dataname4, ios::trunc);
+
+    for(int m = 0; m < 30; m++)
     {
-        for(int n = 11; n < 19; n++)
+        for(int n = 0; n < 30; n++)
         {
             pPointSet.clear();
 
@@ -302,10 +305,18 @@ void KINECT::UpdateData(VISION_DATA &data)
                 }
             }
             CalPlane(pPointSet, data.pGridMap[m][n]);
-//            cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
-//            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
+
+            ofs4<<data.pGridMap[m][n].planePara[0]<<" "<<data.pGridMap[m][n].planePara[1]<<" "<<data.pGridMap[m][n].planePara[2]<<" "<<data.pGridMap[m][n].planePara[3]<<" "
+                                                 <<data.pGridMap[m][n].pointNum<<" "<<data.pGridMap[m][n].planeDegree<<" "<<data.pGridMap[m][n].normalVector<<endl;
+            //cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
+            //cout<<"Height:"<<data.pGridMap[13][15].Y<<endl;
+            //cout<<"Height.X :"<<data.pGridMap[13][15].X<<endl;
+            //cout<<"Height.Z :"<<data.pGridMap[13][15].Z<<endl;
+            //            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
         }
     }
+
+    frameNum++;
 }
 
 void KINECT_BASE::Initiate()
@@ -389,40 +400,71 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
     MatrixMultiple(robotToWorld, tempMatrix, kinectToWorld);
 
 
-    ofstream ofs;
-    stringstream out;
-    out<<frameNum;
-    string dataname ="../PointCloud/cloud" + out.str() + ".txt";
-    ofs.open(dataname,ios::trunc);
+    ofstream ofs1;
+    stringstream out1;
+    out1<<frameNum;
+    string dataname1 ="../PointCloud/originalcloud" + out1.str() + ".txt";
+    ofs1.open(dataname1,ios::trunc);
+
+
+
+    ofstream ofs2;
+    stringstream out2;
+    out2<<frameNum;
+    string dataname2 ="../PointCloud/transformedcloud_" + out2.str() + ".txt";
+    ofs2.open(dataname2,ios::trunc);
+
+    ofstream ofs3;
+    stringstream out3;
+    out3<<frameNum;
+    string dataname3 ="../PointCloud/grid_" + out2.str() + ".txt";
+    ofs3.open(dataname3,ios::trunc);
 
     for (int i = 0; i < 480; i++)
     {
         for(int j = 0; j < 640; j++)
         {
-            Point3D tempPoint = {0, 0, 0};
-
-            tempPoint.X = kinectToWorld[0][0]*data.pointCloud[i][j][0] + kinectToWorld[0][1]*data.pointCloud[i][j][1]
-                    + kinectToWorld[0][2]*data.pointCloud[i][j][2] + kinectToWorld[0][3];
-
-            tempPoint.Y = kinectToWorld[1][0]*data.pointCloud[i][j][0] + kinectToWorld[1][1]*data.pointCloud[i][j][1]
-                    + kinectToWorld[1][2]*data.pointCloud[i][j][2] + kinectToWorld[1][3];
-
-            tempPoint.Z = kinectToWorld[2][0]*data.pointCloud[i][j][0] + kinectToWorld[2][1]*data.pointCloud[i][j][1]
-                    + kinectToWorld[2][2]*data.pointCloud[i][j][2] + kinectToWorld[2][3];
-
-            data.pointCloud[i][j][0] = tempPoint.X;
-            data.pointCloud[i][j][1] = tempPoint.Y;
-            data.pointCloud[i][j][2] = tempPoint.Z;
-
-            ofs<<data.pointCloud[i][j][0]<<" "<<data.pointCloud[i][j][1]<<" "<<data.pointCloud[i][j][2]<<" "<<endl;
+            ofs1<<data.pointCloud[i][j][0]/1000<<" "<<data.pointCloud[i][j][1]/1000<<" "<<data.pointCloud[i][j][2]/1000<<" "<<endl;
         }
     }
 
-    cout<<"FrameNum: "<<frameNum<<endl;
-    frameNum++;
-    ofs.close();
+    for (int i = 0; i < 480; i++)
+    {
+        for(int j = 0; j < 640; j++)
+        {
+            if(data.pointCloud[i][j][0] != 0&&data.pointCloud[i][j][1] != 0&&data.pointCloud[i][j][2] != 0)
+            {
+                Point3D tempPoint = {0, 0, 0};
+
+                tempPoint.X = kinectToWorld[0][0]*data.pointCloud[i][j][0] + kinectToWorld[0][1]*data.pointCloud[i][j][1]
+                        + kinectToWorld[0][2]*data.pointCloud[i][j][2] + kinectToWorld[0][3];
+
+                tempPoint.Y = kinectToWorld[1][0]*data.pointCloud[i][j][0] + kinectToWorld[1][1]*data.pointCloud[i][j][1]
+                        + kinectToWorld[1][2]*data.pointCloud[i][j][2] + kinectToWorld[1][3]*1000;
+
+                tempPoint.Z = kinectToWorld[2][0]*data.pointCloud[i][j][0] + kinectToWorld[2][1]*data.pointCloud[i][j][1]
+                        + kinectToWorld[2][2]*data.pointCloud[i][j][2] + kinectToWorld[2][3];
+
+                data.pointCloud[i][j][0] = tempPoint.X/1000;
+                data.pointCloud[i][j][1] = tempPoint.Y/1000;
+                data.pointCloud[i][j][2] = tempPoint.Z/1000;
+            }
+            ofs2<<data.pointCloud[i][j][0]<<" "<<data.pointCloud[i][j][1]<<" "<<data.pointCloud[i][j][2]<<" "<<endl;
+        }
+    }
 
     GenerateGridMap(data);
+    for(int i = 0; i < 30; i++)
+    {
+        for(int j = 0; j < 30; j++)
+        {
+            ofs3<<data.pGridMap[i][j].X<<" "<<data.pGridMap[i][j].Y<<" "<<data.pGridMap[i][j].Z<<endl;
+        }
+    }
+    cout<<"FrameNum: "<<frameNum<<endl;
+    ofs1.close();
+    ofs2.close();
+    ofs3.close();
 }
 }
 }

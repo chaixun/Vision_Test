@@ -44,10 +44,14 @@ int main()
     {
         auto data = kinect.GetSensorData();
         std::cout<<"data:"<<data.Get().depthMap[240*320]<<std::endl;
-        //std::cout<<"plane_Degree:"<<data.Get().pGridMap[8][12].planeDegree<<std::endl;
-        //std::cout<<"point_Num:"<<data.Get().pGridMap[8][12].pointNum<<std::endl;
-
-        Aris::Core::Sleep(1000);
+        std::cout<<"plane_Degree:"<<data.Get().pGridMap[7][15].planeDegree<<std::endl;
+        std::cout<<"point_Num:"<<data.Get().pGridMap[7][15].pointNum<<std::endl;
+        std::cout<<"norm_Vector:"<<data.Get().pGridMap[7][15].normalVector<<std::endl;
+        std::cout<<"Height:"<<data.Get().pGridMap[7][15].Y<<std::endl;
+        std::cout<<"plane_Para "<<data.Get().pGridMap[7][15].planePara[0]
+                <<" "<<data.Get().pGridMap[7][15].planePara[1]
+                <<" "<<data.Get().pGridMap[7][15].planePara[2]
+                <<" "<<data.Get().pGridMap[7][15].planePara[3]<<endl;                                                                                                            Aris::Core::Sleep(1000);
     }
 
     kinect.Stop();
