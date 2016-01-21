@@ -247,8 +247,10 @@ void KINECT::UpdateData(VISION_DATA &data)
                     }
                 }
             }
-            CalPlane(pPointSet, data.pGridMap[m][n]);
-
+            if(pPointSet.size() != 0)
+            {
+                CalPlane(pPointSet, data.pGridMap[m][n]);
+            }
             ofs4<<data.pGridMap[m][n].planePara[0]<<" "<<data.pGridMap[m][n].planePara[1]<<" "<<data.pGridMap[m][n].planePara[2]<<" "<<data.pGridMap[m][n].planePara[3]<<" "
                                                  <<data.pGridMap[m][n].pointNum<<" "<<data.pGridMap[m][n].planeDegree<<" "<<data.pGridMap[m][n].normalVector<<endl;
             //cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
