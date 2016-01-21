@@ -8,8 +8,11 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cstring>
+#include <Eigen/Dense>
+
 
 using namespace std;
+using namespace Eigen;
 
 namespace Aris
 {
