@@ -6,6 +6,11 @@
 #include "Aris_Core.h"
 #include "Aris_IMU.h"
 #include "Aris_DynKer.h"
+
+#include <rtdk.h>
+#include <native/task.h>
+#include <native/timer.h>
+
 #ifdef PLATFORM_IS_LINUX
 #include "Aris_Vision.h"
 #endif
@@ -42,6 +47,7 @@ int main()
 
     for (int i = 0; i < 5; ++i)
     {
+
         auto data = kinect.GetSensorData();
         std::cout<<"data:"<<data.Get().depthMap[240*320]<<std::endl;
         std::cout<<"plane_Degree:"<<data.Get().pGridMap[7][15].planeDegree<<std::endl;
