@@ -253,11 +253,6 @@ void KINECT::UpdateData(VISION_DATA &data)
             }
             ofs4<<data.pGridMap[m][n].planePara[0]<<" "<<data.pGridMap[m][n].planePara[1]<<" "<<data.pGridMap[m][n].planePara[2]<<" "<<data.pGridMap[m][n].planePara[3]<<" "
                                                  <<data.pGridMap[m][n].pointNum<<" "<<data.pGridMap[m][n].planeDegree<<" "<<data.pGridMap[m][n].normalVector<<endl;
-            //cout<<"pPointSet_Size:"<<pPointSet.size()<<endl;
-            //cout<<"Height:"<<data.pGridMap[13][15].Y<<endl;
-            //cout<<"Height.X :"<<data.pGridMap[13][15].X<<endl;
-            //cout<<"Height.Z :"<<data.pGridMap[13][15].Z<<endl;
-            //            cout<<"Plane_Degree"<<data.pGridMap[7][22].planeDegree<<endl;
         }
     }
 
@@ -358,7 +353,7 @@ void KINECT_BASE::UpdateData(VISION_DATA &data)
     ofstream ofs3;
     stringstream out3;
     out3<<frameNum;
-    string dataname3 ="../PointCloud/grid_" + out2.str() + ".txt";
+    string dataname3 ="../PointCloud/grid_" + out3.str() + ".txt";
     ofs3.open(dataname3,ios::trunc);
 
     for (int i = 0; i < 480; i++)
